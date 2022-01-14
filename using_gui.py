@@ -178,6 +178,7 @@ class Using_GUI:
         setting_gui.Setting_GUI(firstname, lastname, email, phone, username, password)
 
     def download_btn_clicked(self):
+        self.download_btn["state"] = "normal"
         try:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.s.connect((HOST, PORT))
@@ -189,20 +190,24 @@ class Using_GUI:
         # try:
         with open(PATH + "\\" + self.music, 'wb') as f:
             print("file has opened")
-            buf = self.s.recv(1024*8)
+            buf = self.s.recv(1024*4)
             i = 0
             while buf:
+                self.download_btn["state"] = "normal"
+                print(buf.__sizeof__())
                 f.write(buf)
                 i += 1
                 print(i)
+                buf = self.s.recv(1024*4)
                 try:
                     code = buf.decode()
+                    print("buf is str")
                     if code == "1":
+                        print("code is 1")
                         break
-                except:
-                    pass
-                buf = self.s.recv(1024 * 8)
-                print(1)
+                except UnicodeDecodeError:
+                    print(1)
+
         self.window.update()
         print("end")
         messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")

@@ -129,12 +129,14 @@ def music_sender(c: socket.socket, data: str):
     i=0
     with open(".\\Music Bank\\" + music_name, 'rb') as f:
         print("Music is sending")
-        buf = f.read(1024*8)
+        buf = f.read(1024*4)
         while buf:
             i += 1
             print(i)
-            c.sendall(buf)
+            print(buf.__sizeof__())
+            c.send(buf)
             buf = f.read(1024 * 4)
+        print("code 1 sent")
         c.send("1".encode())
         print("music sent successfully")
 
