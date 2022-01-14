@@ -189,18 +189,21 @@ class Using_GUI:
         # try:
         with open(PATH + "\\" + self.music, 'wb') as f:
             print("file has opened")
-            buf = self.s.recv(30000000)
-            f.write(buf)
-            # i = 0
-            # while buf:
-            #
-            #     i += 1
-            #     print(i)
-            #     if not buf:
-            #         break
-            #     buf = self.s.recv(1024 * 4)
-            #     print(1)
-        # self.window.update()
+            buf = self.s.recv(1024*8)
+            i = 0
+            while buf:
+                f.write(buf)
+                i += 1
+                print(i)
+                try:
+                    code = buf.decode()
+                    if code == "1":
+                        break
+                except:
+                    pass
+                buf = self.s.recv(1024 * 8)
+                print(1)
+        self.window.update()
         print("end")
         messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")
         # except:
