@@ -37,6 +37,7 @@ class Logging_In_GUI:
         self.window.geometry("500x800")
         self.window.config(bg=YELLOW, padx=20, pady=20)
         self.window.bind("<Destroy>", self.destroy)
+        # self.window.bind("<Enter>", self.enter_btn)
 
         # Canvas for Logo
         img = PhotoImage(file="music.png")
@@ -95,6 +96,9 @@ class Logging_In_GUI:
         self.sign_in_rbtn["state"] = "disable"
 
         self.window.mainloop()
+
+    def enter_btn(self, event):
+        self.sign_in_btn_clicked()
 
     def destroy(self, event):
         self.s.close()
