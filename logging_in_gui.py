@@ -11,7 +11,7 @@ BLUE = "#086E7D"
 DARK_BLUE = "#1A5F7A"
 
 # Fonts
-AMERICANCAPTIAN = ("AmericanCaptain", "27", "bold")
+AMERICANCAPTIAN = ("AmericanCaptain", "27", "normal")
 ACUIRE = ("Acuire Bold", "15", "bold")
 MOMCAKE = ("MomcakeBold", "10", "bold")
 
@@ -48,6 +48,7 @@ class Logging_In_GUI:
         # Labels
         # Forget your password
         self.label_forget_password = Label(text="Forget your password?", font=("Acuire", "10", "normal"), bg=YELLOW, highlightthickness=0, fg=DARK_BLUE)
+        self.label_forget_password.bind("<Button-1>", self.password_forgot)
         # Sign in
         self.label_title = Label(text="Music Cloud", font=AMERICANCAPTIAN, bg=YELLOW, highlightthickness=0)
         self.label_username = Label(text="Username", font=MOMCAKE, bg=YELLOW, highlightthickness=0)
@@ -93,7 +94,7 @@ class Logging_In_GUI:
         self.username_entry.grid(column=1, row=3, columnspan=3)
         self.label_password.grid(column=0, row=4, padx=5, pady=10)
         self.password_entry.grid(column=1, row=4, columnspan=3)
-        self.label_forget_password.grid(column=2, row=5)
+        self.label_forget_password.grid(column=1, row=5, padx=30)
         self.sign_in_btn.grid(column=1, row=6, columnspan=3, pady=22)
 
         self.sign_in_rbtn["state"] = "disable"
@@ -106,6 +107,9 @@ class Logging_In_GUI:
     def destroy(self, event):
         self.s.close()
         print("socket in log in page closed")
+        pass
+
+    def password_forgot(self):
         pass
 
     def sign_up_sendtoserver(self):
