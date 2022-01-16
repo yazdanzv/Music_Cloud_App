@@ -10,8 +10,7 @@ File_PATH = "User_Datas.json"
 EMAIL = "musicloud99.yahoo.com"
 PASSWORD = "ymorcxgwbxjupmgl"
 
-
-def fun(c):
+def fun(c: socket.socket):
     print(type(c))
     data = c.recv(1024)
     info = data.decode()
@@ -35,8 +34,81 @@ def fun(c):
     elif info[-1] == "6":
         print("old infos sent to client")
         send_old_data(c, info)
+    elif info[-1] == "7":
+        print("code sent")
+        ans = recognize_email_or_username(c, info)
+        if ans == "username":
+            with open(File_PATH, 'r') as f:
+                username = data[0:-1]
+                file_data = json.load(f)
+                email = file_data[username]["email"]
+                firstname = file_data[username]["firstname"]
+                send_email(2, email, firstname, c)
+        elif ans == "email":
+            email = ans
+            with open(File_PATH, 'r') as f:
+                file_data: dict = json.load(f)
+                keys = list(file_data.keys())
+                for i in keys:
+                    if file_data[i]['email'] == email:
+                        firstname = file_data[i]["firstname"]
+                        send_email(2, email, firstname, c)
+        elif ans == "not found":
+            c.send("0".encode())
+        else:
+            raise Exception("Something went wrong !!!")
+    elif info[-1] == "8":
+        with open(File_PATH, 'r') as f:
+            file_data: dict = json.load(f)
+            keys = list(file_data.keys())
+            info = info[0:-1]
+            if info in keys:
+                ans = {"username": info, "password": file_data[info]["password"]}
+                c.send(json.dumps(data).encode())
+            else:
+                for i in keys:
+                    if info == file_data[i]["password"]:
+                        username = i
+                        password = file_data[username]["password"]
+                        ans = {"username": username, "password": password}
+                        c.send(json.dumps(data).encode())
+    elif info[-1] == "9":
+        ans = recognize_email_or_username(info)
+        if ans == "username":
+            with open(File_PATH, 'r') as f:
+                username = data[0:-1]
+                file_data = json.load(f)
+                email = file_data[username]["email"]
+                firstname = file_data[username]["firstname"]
+                send_email(2, email, firstname, c)
+        elif ans == "email":
+            email = ans
+            with open(File_PATH, 'r') as f:
+                file_data: dict = json.load(f)
+                keys = list(file_data.keys())
+                for i in keys:
+                    if file_data[i]['email'] == email:
+                        firstname = file_data[i]["firstname"]
+                        send_email(2, email, firstname, c)
+        else:
+            raise Exception("Something went wrong !!!")
+
+
     c.close()
     print("end")
+
+def recognize_email_or_username(c: socket.socket, data: str):
+    data = data[0:-1]
+    with open(File_PATH, 'r') as f:
+        file_data: dict = json.load(f)
+        if data in file_data:
+            return "username"
+        else:
+            keys = list(file_data.keys())
+            for i in keys:
+                if data == file_data[i]["email"]:
+                    return "email"
+            return "not found"
 
 
 def sign_up(c: socket.socket, data: str):
@@ -77,7 +149,8 @@ def sign_up(c: socket.socket, data: str):
                 c.send("0".encode())
 
 
-def send_email(code, email, firstname):
+def send_email(code, email, firstname, c:socket.socket):
+    import random
     with smtplib.SMTP("smtp.mail.yahoo.com") as connection:
         connection.starttls()
         connection.login(user=EMAIL, password=PASSWORD)
@@ -86,6 +159,14 @@ def send_email(code, email, firstname):
             connection.sendmail(from_addr=EMAIL, to_addrs=email,
                                 msg=f"Subject:Welcome to Music Cloud\n\nDear {firstname}\nWelcome to our app\nWe hope "
                                     f"that we can have nice times together")
+        elif code == 2:
+            security_code = random.randint(10000, 99999)
+            connection.sendmail(from_addr=EMAIL, to_addrs=email, msg=f"Subject:Music Cloud - Security Code\n\n"
+                                                                     f"Dear {firstname}\n"
+                                                                    f"Here is your security code to retrieve your "
+                                                                     f"account informations\nCode = {security_code}")
+            # sending the security code
+            c.send((str(security_code) + "1").encode())
 
 
 def sign_in(c: socket.socket, data: str):

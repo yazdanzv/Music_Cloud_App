@@ -37,6 +37,7 @@ class Password_Forget_GUI:
         self.entry_username["state"] = "disable"
         self.entry_username.bind("<Button-1>", self.enable_entry)
         self.entry_username.bind("<FocusOut>", self.disable_entry)
+        self.entry_username.bind("<KeyRelease>", self.enable_btn)
 
         # Canvas
         self.canvas_logo = Canvas(width=125, height=100)
@@ -60,22 +61,33 @@ class Password_Forget_GUI:
         self.window.mainloop()
 
     def retreive_password_clicked(self):
-        pass
+        import verify_gui
+        user_or_email: str = self.entry_username.get()
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((HOST, PORT))
+        s.send(user_or_email.encode())
+        security_code = s.recv(1024).decode()
+        if security_code[-1] == 1:
+            security_code = security_code[0:-1]
+            self.window.destroy()
+            verify_gui.Verify_GUI(security_code, self.entry_username.get())
+        else:
+            messagebox.showerror(title="ERROR", message="this email or username not found")
 
     def back_clicked(self):
         import logging_in_gui
         self.window.destroy()
-        Logging_In_GUI()
+        logging_in_gui.Logging_In_GUI()
 
     def enable_btn(self, event):
-        pass
+        if len(self.entry_username.get()) != 0:
+            self.retreive_password_btn["state"] = "normal"
+        elif len(self.entry_username.get()) == 0:
+            self.retreive_password_btn["state"] = "disable"
 
     def enable_entry(self, event):
         self.entry_username["state"] = "normal"
         self.entry_username.delete(0, END)
-
-    def disable_btn(self, event):
-        pass
 
     def disable_entry(self, event):
         if self.entry_username.get() == "":
@@ -86,4 +98,4 @@ class Password_Forget_GUI:
 
 
 
-Password_Forget_GUI()
+# Password_Forget_GUI()
