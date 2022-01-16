@@ -4,8 +4,11 @@ from _thread import *
 import json
 import os
 import socket
+import smtplib
 
 File_PATH = "User_Datas.json"
+EMAIL = "musicloud99.yahoo.com"
+PASSWORD = "ymorcxgwbxjupmgl"
 
 
 def fun(c):
@@ -36,7 +39,6 @@ def fun(c):
     print("end")
 
 
-
 def sign_up(c: socket.socket, data: str):
     flag_email = True
     flag_phone = True
@@ -50,6 +52,7 @@ def sign_up(c: socket.socket, data: str):
     username = list(info.keys())[0]
     email = info[username]['email']
     phone = info[username]['phone']
+    firstname = info[username]["firstname"]
     file_keys = list(file_data.keys())
 
     if username in file_keys:
@@ -70,7 +73,19 @@ def sign_up(c: socket.socket, data: str):
             with open(File_PATH, 'w') as f:
                 file_data[username] = info[username]
                 json.dump(file_data, f, indent=4)
+                send_email(1, email, firstname)
                 c.send("0".encode())
+
+
+def send_email(code, email, firstname):
+    with smtplib.SMTP("smtp.mail.yahoo.com") as connection:
+        connection.starttls()
+        connection.login(user=EMAIL, password=PASSWORD)
+        # Welcome message
+        if code == 1:
+            connection.sendmail(from_addr=EMAIL, to_addrs=email,
+                                msg=f"Subject:Welcome to Music Cloud\n\nDear {firstname}\nWelcome to our app\nWe hope "
+                                    f"that we can have nice times together")
 
 
 def sign_in(c: socket.socket, data: str):
@@ -126,18 +141,16 @@ def change_user_data(data: str):
 
 def music_sender(c: socket.socket, data: str):
     music_name = data[0:-1]
-    i=0
+    i = 0
     with open(".\\Music Bank\\" + music_name, 'rb') as f:
         print("Music is sending")
-        buf = f.read(1024*4)
+        buf = f.read(1024 * 4)
         while buf:
             i += 1
             print(i)
-            print(buf.__sizeof__())
             c.send(buf)
             buf = f.read(1024 * 4)
-        print("code 1 sent")
-        c.send("1".encode())
+        c.shutdown(socket.SHUT_RDWR)
         print("music sent successfully")
 
 
@@ -172,4 +185,3 @@ if __name__ == "__main__":
         print('Connected to :', addr[0], ':', addr[1])
         # print_lock.acquire()
         start_new_thread(fun, (c,))
-

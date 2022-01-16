@@ -37,7 +37,7 @@ class Logging_In_GUI:
         self.window.geometry("500x800")
         self.window.config(bg=YELLOW, padx=20, pady=20)
         self.window.bind("<Destroy>", self.destroy)
-        # self.window.bind("<Enter>", self.enter_btn)
+        self.window.bind("<Return>", self.enter_btn)
 
         # Canvas for Logo
         img = PhotoImage(file="music.png")
@@ -46,6 +46,8 @@ class Logging_In_GUI:
         self.canvas.config(bg=YELLOW, highlightthickness=0)
 
         # Labels
+        # Forget your password
+        self.label_forget_password = Label(text="Forget your password?", font=("Acuire", "10", "normal"), bg=YELLOW, highlightthickness=0, fg=DARK_BLUE)
         # Sign in
         self.label_title = Label(text="Music Cloud", font=AMERICANCAPTIAN, bg=YELLOW, highlightthickness=0)
         self.label_username = Label(text="Username", font=MOMCAKE, bg=YELLOW, highlightthickness=0)
@@ -91,7 +93,8 @@ class Logging_In_GUI:
         self.username_entry.grid(column=1, row=3, columnspan=3)
         self.label_password.grid(column=0, row=4, padx=5, pady=10)
         self.password_entry.grid(column=1, row=4, columnspan=3)
-        self.sign_in_btn.grid(column=1, row=5, columnspan=3, pady=22)
+        self.label_forget_password.grid(column=2, row=5)
+        self.sign_in_btn.grid(column=1, row=6, columnspan=3, pady=22)
 
         self.sign_in_rbtn["state"] = "disable"
 

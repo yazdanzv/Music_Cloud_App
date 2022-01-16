@@ -4,6 +4,9 @@ from tkinter import filedialog
 import json
 import os
 import socket
+import multiprocessing
+import _thread
+import threading
 
 # Colors
 YELLOW = "#FFC900"
@@ -20,6 +23,9 @@ STEAMED = ("Steamed DEMO", "12", "normal")
 HOST = "127.0.0.1"
 PORT = 80
 
+flag = True
+i = 0
+
 
 class Using_GUI:
     def __init__(self, fname: str, lname: str, email: str, phone: str, username: str, password: str):
@@ -35,6 +41,7 @@ class Using_GUI:
         self.add_music = ""
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((HOST, PORT))
+        self.thread_running = bool
 
         # Creating the UI
         self.window = Tk()
@@ -134,7 +141,6 @@ class Using_GUI:
             self.label_save.config(text=self.directory)
             self.download_btn["state"] = "normal"
 
-
         self.folder_btn = Button(text="select the path", bg=BLUE, font=ACUIRE, fg=LIGHT_YELLOW,
                                  command=folder_btn_clicked, width=15)
 
@@ -148,7 +154,8 @@ class Using_GUI:
                                                   filetypes=[("all files", "*.mp3*")])
             self.add_music = filename
 
-        self.button_explore = Button(text="Add Musics", command=browseFiles, font=ACUIRE, bg=BLUE, fg=LIGHT_YELLOW, width=15)
+        self.button_explore = Button(text="Add Musics", command=browseFiles, font=ACUIRE, bg=BLUE, fg=LIGHT_YELLOW,
+                                     width=15)
 
         # Giving position
         self.canvas_avatar.grid(column=0, row=0)
@@ -178,50 +185,44 @@ class Using_GUI:
         setting_gui.Setting_GUI(firstname, lastname, email, phone, username, password)
 
     def download_btn_clicked(self):
-        self.download_btn["state"] = "normal"
-        try:
-            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.s.connect((HOST, PORT))
-        except:
-            print("socket error")
-        self.s.send((self.music + "5").encode())
-        print("sent")
-        PATH = self.label_save.cget("text")
-        # try:
-        with open(PATH + "\\" + self.music, 'wb') as f:
-            print("file has opened")
-            buf = self.s.recv(1024*4)
-            i = 0
-            while buf:
-                self.download_btn["state"] = "normal"
-                print(buf.__sizeof__())
-                f.write(buf)
-                i += 1
-                print(i)
-                buf = self.s.recv(1024*4)
-                try:
-                    code = buf.decode()
-                    print("buf is str")
-                    if code == "1":
-                        print("code is 1")
-                        break
-                except UnicodeDecodeError:
-                    print(1)
-
-        self.window.update()
-        print("end")
-        messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")
-        # except:
-        #     messagebox.showerror(title="ERROR", message="Select a music first")
-        #     self.listbox.focus_force()
+        if len(self.music) != 0:
+            try:
+                self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.s.connect((HOST, PORT))
+            except:
+                print("socket error")
+            self.s.send((self.music + "5").encode())
+            print("sent")
+            PATH = self.label_save.cget("text")
+            # try:
+            with open(PATH + "\\" + self.music, 'wb') as f:
+                print("file has opened")
+                buf = self.s.recv(1024 * 4)
+                i = 0
+                while buf:
+                    f.write(buf)
+                    i += 1
+                    print(i)
+                    buf = self.s.recv(1024 * 4)
+            print("end")
+            messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")
+        else:
+            messagebox.showerror(title="ERROR", message="Select a music first")
+            self.listbox.focus_force()
 
         self.s.close()
-
 
     def destroy(self, event):
         self.s.close()
         print("socket in using page closed")
         pass
 
+    def download(self):
+        global i
+        i += 1
+        t = threading.Thread(name="{i}", target=self.download_btn_clicked)
+        t.setDaemon()
+        t.start()
+        # threading.main_thread().join()
 
 # Using_GUI("yazdan", "zandiyevakili", "yazdanzv.1378@gmail.com", "09354416622", "yazdanzv", "yanik1387")
