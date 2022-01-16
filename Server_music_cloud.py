@@ -7,8 +7,8 @@ import socket
 import smtplib
 
 File_PATH = "User_Datas.json"
-EMAIL = "musicloud99.yahoo.com"
-PASSWORD = "hyfrfjafioaaydhp"
+EMAIL = "musicloudzv@gmail.com"
+PASSWORD = "yanik1387"
 
 def fun(c: socket.socket):
     print(type(c))
@@ -247,7 +247,7 @@ def send_old_data(c: socket.socket, data: str):
 
 
 if __name__ == "__main__":
-    connection = smtplib.SMTP("smtp.mail.yahoo.com")
+    connection = smtplib.SMTP("smtp.gmail.com")
     connection.starttls()
     connection.login(user=EMAIL, password=PASSWORD)
 
