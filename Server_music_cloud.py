@@ -8,7 +8,7 @@ import smtplib
 
 File_PATH = "User_Datas.json"
 EMAIL = "musicloud99.yahoo.com"
-PASSWORD = "ymorcxgwbxjupmgl"
+PASSWORD = "hyfrfjafioaaydhp"
 
 def fun(c: socket.socket):
     print(type(c))
@@ -35,14 +35,17 @@ def fun(c: socket.socket):
         print("old infos sent to client")
         send_old_data(c, info)
     elif info[-1] == "7":
-        print("code sent")
+        print("code sending...")
         ans = recognize_email_or_username(c, info)
         if ans == "username":
             with open(File_PATH, 'r') as f:
-                username = data[0:-1]
+                username = info[0:-1]
                 file_data = json.load(f)
+                print(username)
                 email = file_data[username]["email"]
+                print(email)
                 firstname = file_data[username]["firstname"]
+                print(firstname)
                 send_email(2, email, firstname, c)
         elif ans == "email":
             email = ans
@@ -151,22 +154,21 @@ def sign_up(c: socket.socket, data: str):
 
 def send_email(code, email, firstname, c:socket.socket):
     import random
-    with smtplib.SMTP("smtp.mail.yahoo.com") as connection:
-        connection.starttls()
-        connection.login(user=EMAIL, password=PASSWORD)
-        # Welcome message
-        if code == 1:
-            connection.sendmail(from_addr=EMAIL, to_addrs=email,
-                                msg=f"Subject:Welcome to Music Cloud\n\nDear {firstname}\nWelcome to our app\nWe hope "
-                                    f"that we can have nice times together")
-        elif code == 2:
-            security_code = random.randint(10000, 99999)
-            connection.sendmail(from_addr=EMAIL, to_addrs=email, msg=f"Subject:Music Cloud - Security Code\n\n"
-                                                                     f"Dear {firstname}\n"
-                                                                    f"Here is your security code to retrieve your "
-                                                                     f"account informations\nCode = {security_code}")
-            # sending the security code
-            c.send((str(security_code) + "1").encode())
+    global connection
+    # Welcome message
+    if code == 1:
+        connection.sendmail(from_addr=EMAIL, to_addrs=email,
+                            msg=f"Subject:Welcome to Music Cloud\n\nDear {firstname}\nWelcome to our app\nWe hope "
+                                f"that we can have nice times together")
+    elif code == 2:
+        security_code = random.randint(10000, 99999)
+        connection.sendmail(from_addr=EMAIL, to_addrs=email, msg=f"Subject:Music Cloud - Security Code\n\n"
+                                                                 f"Dear {firstname}\n"
+                                                                 f"Here is your security code to retrieve your "
+                                                                 f"account informations\nCode = {security_code}")
+        # sending the security code
+        c.send((str(security_code) + "1").encode())
+        print("code sent")
 
 
 def sign_in(c: socket.socket, data: str):
@@ -245,6 +247,9 @@ def send_old_data(c: socket.socket, data: str):
 
 
 if __name__ == "__main__":
+    connection = smtplib.SMTP("smtp.mail.yahoo.com")
+    connection.starttls()
+    connection.login(user=EMAIL, password=PASSWORD)
 
     host = ""
     port = 80

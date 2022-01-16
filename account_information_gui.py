@@ -65,4 +65,4 @@ class Account_Information_GUI:
         self.window.destroy()
         logging_in_gui.Logging_In_GUI()
 
-Account_Information_GUI("")
+# Account_Information_GUI("")

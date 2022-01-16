@@ -109,8 +109,10 @@ class Logging_In_GUI:
         print("socket in log in page closed")
         pass
 
-    def password_forgot(self):
-        pass
+    def password_forgot(self, event):
+        import forget_password_gui
+        self.window.destroy()
+        forget_password_gui.Password_Forget_GUI()
 
     def sign_up_sendtoserver(self):
         try:

@@ -65,8 +65,9 @@ class Password_Forget_GUI:
         user_or_email: str = self.entry_username.get()
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((HOST, PORT))
-        s.send(user_or_email.encode())
+        s.send((user_or_email + "7").encode())
         security_code = s.recv(1024).decode()
+        print(security_code)
         if security_code[-1] == 1:
             security_code = security_code[0:-1]
             self.window.destroy()
