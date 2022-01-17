@@ -74,6 +74,7 @@ class Verify_GUI:
             s.connect((HOST, PORT))
             s.send(f"{self.user_email}8".encode())
             data = s.recv(1024).decode()
+            print(data)
             info = json.loads(data)
             username = info["username"]
             password = info["password"]
@@ -85,11 +86,14 @@ class Verify_GUI:
             self.code_entry.focus_force()
 
     def resent_email_clicked(self, event):
+        print("resent entered")
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((HOST, PORT))
         s.send((self.user_email + "9").encode())
         ans = s.recv(1024).decode()
-        if ans == "1":
+        print(ans)
+        if ans[-1] == "1":
+            self.code = ans[0:-1]
             messagebox.showinfo(title="SENT", message="Email sent again")
         else:
             raise Exception("email didn't send !!!")

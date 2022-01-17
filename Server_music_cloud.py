@@ -10,6 +10,7 @@ File_PATH = "User_Datas.json"
 EMAIL = "musicloudzv@gmail.com"
 PASSWORD = "yanik1387"
 
+
 def fun(c: socket.socket):
     print(type(c))
     data = c.recv(1024)
@@ -36,8 +37,9 @@ def fun(c: socket.socket):
         send_old_data(c, info)
     elif info[-1] == "7":
         print("code sending...")
-        ans = recognize_email_or_username(c, info)
+        ans = recognize_email_or_username(info)
         if ans == "username":
+            print("its username")
             with open(File_PATH, 'r') as f:
                 username = info[0:-1]
                 file_data = json.load(f)
@@ -48,44 +50,51 @@ def fun(c: socket.socket):
                 print(firstname)
                 send_email(2, email, firstname, c)
         elif ans == "email":
-            email = ans
+            print("its an email")
             with open(File_PATH, 'r') as f:
                 file_data: dict = json.load(f)
                 keys = list(file_data.keys())
+                email = info[0:-1]
+
                 for i in keys:
-                    if file_data[i]['email'] == email:
+                    if file_data[i]["email"] == email:
                         firstname = file_data[i]["firstname"]
+                        print(firstname)
+                        print(email)
                         send_email(2, email, firstname, c)
+
+
         elif ans == "not found":
             c.send("0".encode())
         else:
             raise Exception("Something went wrong !!!")
     elif info[-1] == "8":
+        info = info[0:-1]
         with open(File_PATH, 'r') as f:
             file_data: dict = json.load(f)
             keys = list(file_data.keys())
-            info = info[0:-1]
             if info in keys:
                 ans = {"username": info, "password": file_data[info]["password"]}
                 c.send(json.dumps(ans).encode())
             else:
                 for i in keys:
-                    if info == file_data[i]["password"]:
+                    if info == file_data[i]["email"]:
                         username = i
                         password = file_data[username]["password"]
                         ans = {"username": username, "password": password}
-                        c.send(json.dumps(ans).encode())
+                        break
+                c.send(json.dumps(ans).encode())
     elif info[-1] == "9":
         ans = recognize_email_or_username(info)
         if ans == "username":
             with open(File_PATH, 'r') as f:
-                username = data[0:-1]
+                username = info[0:-1]
                 file_data = json.load(f)
                 email = file_data[username]["email"]
                 firstname = file_data[username]["firstname"]
                 send_email(2, email, firstname, c)
         elif ans == "email":
-            email = ans
+            email = info[0:-1]
             with open(File_PATH, 'r') as f:
                 file_data: dict = json.load(f)
                 keys = list(file_data.keys())
@@ -96,20 +105,22 @@ def fun(c: socket.socket):
         else:
             raise Exception("Something went wrong !!!")
 
-
     c.close()
     print("end")
 
-def recognize_email_or_username(c: socket.socket, data: str):
+
+def recognize_email_or_username(data: str):
     data = data[0:-1]
     with open(File_PATH, 'r') as f:
         file_data: dict = json.load(f)
         if data in file_data:
             return "username"
         else:
+            print("here i am ")
             keys = list(file_data.keys())
             for i in keys:
                 if data == file_data[i]["email"]:
+                    print(i)
                     return "email"
             return "not found"
 
@@ -152,7 +163,7 @@ def sign_up(c: socket.socket, data: str):
                 c.send("0".encode())
 
 
-def send_email(code, email, firstname, c:socket.socket):
+def send_email(code, email, firstname, c: socket.socket):
     import random
     global connection
     # Welcome message
@@ -250,7 +261,6 @@ if __name__ == "__main__":
     connection = smtplib.SMTP("smtp.gmail.com")
     connection.starttls()
     connection.login(user=EMAIL, password=PASSWORD)
-
 
     host = ""
     port = 80

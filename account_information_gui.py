@@ -26,7 +26,7 @@ class Account_Information_GUI:
         # UI
         self.window = Tk()
         self.window.title("YOUR ACCOUNT INFORMATIONS")
-        self.window.geometry("350x300")
+        self.window.geometry("300x350")
         self.window.config(bg=YELLOW, padx=20, pady=20)
 
         # Label
