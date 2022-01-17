@@ -68,10 +68,12 @@ class Password_Forget_GUI:
         s.send((user_or_email + "7").encode())
         security_code = s.recv(1024).decode()
         print(security_code)
-        if security_code[-1] == 1:
+        print(type(security_code))
+        if security_code[-1] == "1":
             security_code = security_code[0:-1]
+            username_email = self.entry_username.get()
             self.window.destroy()
-            verify_gui.Verify_GUI(security_code, self.entry_username.get())
+            verify_gui.Verify_GUI(security_code, username_email)
         else:
             messagebox.showerror(title="ERROR", message="this email or username not found")
 

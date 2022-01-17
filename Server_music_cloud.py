@@ -67,14 +67,14 @@ def fun(c: socket.socket):
             info = info[0:-1]
             if info in keys:
                 ans = {"username": info, "password": file_data[info]["password"]}
-                c.send(json.dumps(data).encode())
+                c.send(json.dumps(ans).encode())
             else:
                 for i in keys:
                     if info == file_data[i]["password"]:
                         username = i
                         password = file_data[username]["password"]
                         ans = {"username": username, "password": password}
-                        c.send(json.dumps(data).encode())
+                        c.send(json.dumps(ans).encode())
     elif info[-1] == "9":
         ans = recognize_email_or_username(info)
         if ans == "username":
