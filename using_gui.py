@@ -40,7 +40,8 @@ class Using_GUI:
         self.password = password
         self.username = username
         self.music = ""
-        self.add_music = ""
+        self.add_music = str
+        self.music_add_path = str
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((HOST, PORT))
         self.thread_running = bool
@@ -150,18 +151,10 @@ class Using_GUI:
 
         # --------------------------------------------------------------------------------------------------------
 
-        # Music Selector
-        # --------------------------------------------------------------------------------------------------------
-        def browseFiles():
-            filename = filedialog.askopenfilename(initialdir="/",
-                                                  title="Select a music",
-                                                  filetypes=[("all files", "*.mp3*")])
-            self.add_music = filename
-            print(filename)
-            self.add_music_thread()
 
-        self.button_explore = Button(text="Add Musics", command=browseFiles, font=ACUIRE, bg=BLUE, fg=LIGHT_YELLOW,
-                                     width=15)
+
+        # self.button_explore = Button(text="Add Musics", command=self.browseFiles, font=ACUIRE, bg=BLUE, fg=LIGHT_YELLOW,
+        #                              width=15)
 
         # Giving position
         self.canvas_avatar.grid(column=0, row=0)
@@ -172,36 +165,60 @@ class Using_GUI:
         self.search_entry.grid(column=1, row=3, columnspan=3)
         self.listbox.grid(column=1, row=4, columnspan=3, pady=10)
         self.download_btn.grid(column=1, row=5, columnspan=3, pady=20)
-        self.button_explore.grid(column=1, row=6, columnspan=3, pady=20)
+        # self.button_explore.grid(column=1, row=6, columnspan=3, pady=20)
 
         self.window.mainloop()
 
-    def add_music_thread(self):
-        f = threading.Thread(target=self.add_music_clicked)
-        f.setDaemon(True)
-        f.start()
-
-    def add_music_clicked(self):
-        if len(self.add_music) != 0:
-            try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.connect((HOST, PORT))
-                s.send((self.add_music + "a").encode())
-                with open(self.add_music, 'rb') as f:
-                    buf = f.read(1024 * 4)
-                    while buf:
-                        s.sendall(buf)
-                        buf = f.read(1024 * 4)
-                ans = s.recv(1024).decode()
-                if ans == "1":
-                    messagebox.showinfo(title="MUSIC CLOUD", message="Music added successfully")
-                else:
-                    raise Exception("something went wrong during adding music to server")
-            except:
-                pass
-        else:
-            messagebox.showerror(title="ERROR", message="Select a music first")
-            self.button_explore.focus_force()
+    # def browseFiles(self):
+    #     self.music_add_path: str = filedialog.askopenfilename(initialdir="/",
+    #                                           title="Select a music",
+    #                                           filetypes=[("all files", "*.mp3*")])
+    #     print(self.music_add_path)
+    #     print(type(self.music_add_path))
+    #     list = self.music_add_path.split('/')
+    #     self.add_music = list[-1]
+    #     print(self.add_music)
+    #     self.add_music_thread()
+    #
+    # def add_music_thread(self):
+    #     f = threading.Thread(target=self.add_music_clicked)
+    #     f.setDaemon(True)
+    #     f.start()
+    #
+    # def add_music_clicked(self):
+    #     print("entered")
+    #     if len(self.add_music) != 0:
+    #         try:
+    #             self.s.close()
+    #         except:
+    #             pass
+    #         try:
+    #             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #             self.s.connect((HOST, PORT))
+    #         except:
+    #             pass
+    #         try:
+    #             print(self.add_music + "a")
+    #             self.s.send((self.add_music + "a").encode())
+    #             with open(self.music_add_path, 'rb') as f:
+    #                 print("first")
+    #                 buf = f.read(1024 * 4)
+    #                 i=0
+    #                 while buf:
+    #                     i+=1
+    #                     print(i)
+    #                     self.s.sendall(buf)
+    #                     buf = f.read(1024 * 4)
+    #             ans = self.s.recv(1024).decode()
+    #             if ans == "1":
+    #                 messagebox.showinfo(title="MUSIC CLOUD", message="Music added successfully")
+    #             else:
+    #                 raise Exception("something went wrong during adding music to server")
+    #         except:
+    #             pass
+    #     else:
+    #         messagebox.showerror(title="ERROR", message="Select a music first")
+    #         self.button_explore.focus_force()
 
     def goto_setting(self, event):
         import setting_gui
@@ -222,7 +239,7 @@ class Using_GUI:
         if len(self.music) != 0:
             if len(self.label_save.cget("text")) != 0:
                 PATH = self.label_save.cget("text")
-                # messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")
+                messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")
                 try:
                     self.s.close()
                 except:
@@ -248,7 +265,7 @@ class Using_GUI:
                         i += 1
                         print(i)
                         f.write(buf)
-                        self.buf = self.s.recv(1024 * 4)
+                        buf = self.s.recv(1024 * 4)
                 print("end1")
             else:
                 messagebox.showerror(title="ERROR", message="you have to select a path first")

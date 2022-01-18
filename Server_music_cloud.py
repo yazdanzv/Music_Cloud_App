@@ -11,6 +11,8 @@ EMAIL = "musicloudzv@gmail.com"
 PASSWORD = "yanik1387"
 MUSIC_PATH = ".\\Music Bank"
 
+add_music_name = str
+
 
 def fun(c: socket.socket):
     print(type(c))
@@ -105,21 +107,33 @@ def fun(c: socket.socket):
                         send_email(2, email, firstname, c)
         else:
             raise Exception("Something went wrong !!!")
-    elif info[-1] == "a":
-        print("adding....")
-        add_music(c, info[0:-1])
+        # elif info[-1] == "a":
+        #     global add_music_name
+        #     print("adding....")
+        #     add_music_name = info[0:-1]
+        #     print(add_music_name)
 
-    c.close()
-    print("end")
+        c.close()
+        print("end")
 
-def add_music(c: socket.socket, music_name):
-    with open(MUSIC_PATH + "\\" + music_name, 'wb') as f:
-        buf = c.recv(1024+4)
-        while buf:
-            f.write(buf)
-            buf = c.recv(1024*4)
-        print("added")
 
+
+# def add_music(c: socket.socket, music_name: str):
+#     print(music_name)
+#     with open(MUSIC_PATH + "\\" + music_name, 'wb') as f:
+#         print("first")
+#         buf = c.recv(1024 * 4)
+#         i = 0
+#         print("before loop")
+#         while buf:
+#             i += 1
+#             print(i)
+#             f.write(buf)
+#             buf = c.recv(1024 * 4)
+#         print("added")
+#         c.send("1".encode())
+#         print("successful code sent")
+#         c.close()
 
 
 def recognize_email_or_username(data: str):
