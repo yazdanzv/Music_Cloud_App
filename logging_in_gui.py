@@ -204,12 +204,14 @@ class Logging_In_GUI:
         self.password_entry.grid_forget()
         self.confirm_entry.grid_forget()
         self.sign_up_btn.grid_forget()
+        self.label_forget_password.grid_forget()
         # Setting the new arrangement
         self.label_username.grid(column=0, row=3, padx=5, pady=10)
         self.username_entry.grid(column=1, row=3, columnspan=3)
         self.label_password.grid(column=0, row=4, padx=5, pady=10)
         self.password_entry.grid(column=1, row=4, columnspan=3)
-        self.sign_in_btn.grid(column=1, row=5, columnspan=3, pady=22)
+        self.label_forget_password.grid(column=1, row=5, padx=30)
+        self.sign_in_btn.grid(column=1, row=6, columnspan=3, pady=22)
         self.username_entry.focus_force()
 
     def sign_up_radioclicked(self):

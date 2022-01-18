@@ -8,6 +8,10 @@ import multiprocessing
 import _thread
 import threading
 
+try:
+    import Tkinter as tk, time, threading, random, Queue as queue
+except ModuleNotFoundError:  # Python 3
+    import tkinter as tk, time, threading, random, queue
 # Colors
 YELLOW = "#FFC900"
 LIGHT_YELLOW = "#FFF89A"
@@ -24,13 +28,11 @@ HOST = "127.0.0.1"
 PORT = 80
 
 flag = True
-i = 0
-
 
 class Using_GUI:
     def __init__(self, fname: str, lname: str, email: str, phone: str, username: str, password: str):
         # Setting the class variables
-        global folder_btn_clicked
+        # global folder_btn_clicked
         self.firstname = fname
         self.lastname = lname
         self.email = email
@@ -42,6 +44,8 @@ class Using_GUI:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((HOST, PORT))
         self.thread_running = bool
+        self.count = 0
+        self.buf = bytes
 
         # Creating the UI
         self.window = Tk()
@@ -72,7 +76,7 @@ class Using_GUI:
 
         # Buttons
         self.download_btn = Button(text="Download", bg=BLUE, font=ACUIRE, fg=LIGHT_YELLOW,
-                                   command=self.download_btn_clicked, width=15)
+                                   command=self.download, width=15)
         self.download_btn["state"] = "disable"
 
         # Search Box
@@ -153,6 +157,8 @@ class Using_GUI:
                                                   title="Select a music",
                                                   filetypes=[("all files", "*.mp3*")])
             self.add_music = filename
+            print(filename)
+            self.add_music_thread()
 
         self.button_explore = Button(text="Add Musics", command=browseFiles, font=ACUIRE, bg=BLUE, fg=LIGHT_YELLOW,
                                      width=15)
@@ -170,6 +176,33 @@ class Using_GUI:
 
         self.window.mainloop()
 
+    def add_music_thread(self):
+        f = threading.Thread(target=self.add_music_clicked)
+        f.setDaemon(True)
+        f.start()
+
+    def add_music_clicked(self):
+        if len(self.add_music) != 0:
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect((HOST, PORT))
+                s.send((self.add_music + "a").encode())
+                with open(self.add_music, 'rb') as f:
+                    buf = f.read(1024 * 4)
+                    while buf:
+                        s.sendall(buf)
+                        buf = f.read(1024 * 4)
+                ans = s.recv(1024).decode()
+                if ans == "1":
+                    messagebox.showinfo(title="MUSIC CLOUD", message="Music added successfully")
+                else:
+                    raise Exception("something went wrong during adding music to server")
+            except:
+                pass
+        else:
+            messagebox.showerror(title="ERROR", message="Select a music first")
+            self.button_explore.focus_force()
+
     def goto_setting(self, event):
         import setting_gui
         firstname = self.firstname
@@ -185,27 +218,41 @@ class Using_GUI:
         setting_gui.Setting_GUI(firstname, lastname, email, phone, username, password)
 
     def download_btn_clicked(self):
+        import datetime
         if len(self.music) != 0:
-            try:
-                self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.s.connect((HOST, PORT))
-            except:
-                print("socket error")
-            self.s.send((self.music + "5").encode())
-            print("sent")
-            PATH = self.label_save.cget("text")
-            # try:
-            with open(PATH + "\\" + self.music, 'wb') as f:
-                print("file has opened")
-                buf = self.s.recv(1024 * 4)
-                i = 0
-                while buf:
-                    f.write(buf)
-                    i += 1
-                    print(i)
+            if len(self.label_save.cget("text")) != 0:
+                PATH = self.label_save.cget("text")
+                # messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")
+                try:
+                    self.s.close()
+                except:
+                    pass
+                try:
+                    self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    self.s.connect((HOST, PORT))
+                except:
+                    print("socket error")
+                self.s.send((self.music + "5").encode())
+                print("sent")
+                # try:
+                timeout = datetime.datetime.now() + datetime.timedelta(seconds=6)
+                with open(PATH + "\\" + self.music, 'wb') as f:
+                    print("file has opened")
                     buf = self.s.recv(1024 * 4)
-            print("end")
-            messagebox.showinfo(title="Download was Successful", message=f"{self.music} downloaded in {PATH}")
+                    i = 0
+                    # t = threading.Thread(target=self.write, args=[f, self.buf])
+                    # t.setDaemon(True)
+                    # t.start()
+                    i=0
+                    while buf:
+                        i += 1
+                        print(i)
+                        f.write(buf)
+                        self.buf = self.s.recv(1024 * 4)
+                print("end1")
+            else:
+                messagebox.showerror(title="ERROR", message="you have to select a path first")
+                self.folder_btn.focus_force()
         else:
             messagebox.showerror(title="ERROR", message="Select a music first")
             self.listbox.focus_force()
@@ -218,11 +265,13 @@ class Using_GUI:
         pass
 
     def download(self):
-        global i
-        i += 1
-        t = threading.Thread(name="{i}", target=self.download_btn_clicked)
-        t.setDaemon()
+        self.count += 1
+        t = threading.Thread(target=self.download_btn_clicked)
+        t.setDaemon(True)
         t.start()
-        # threading.main_thread().join()
+
+
+
+
 
 # Using_GUI("yazdan", "zandiyevakili", "yazdanzv.1378@gmail.com", "09354416622", "yazdanzv", "yanik1387")

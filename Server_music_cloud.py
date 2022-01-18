@@ -9,6 +9,7 @@ import smtplib
 File_PATH = "User_Datas.json"
 EMAIL = "musicloudzv@gmail.com"
 PASSWORD = "yanik1387"
+MUSIC_PATH = ".\\Music Bank"
 
 
 def fun(c: socket.socket):
@@ -104,9 +105,21 @@ def fun(c: socket.socket):
                         send_email(2, email, firstname, c)
         else:
             raise Exception("Something went wrong !!!")
+    elif info[-1] == "a":
+        print("adding....")
+        add_music(c, info[0:-1])
 
     c.close()
     print("end")
+
+def add_music(c: socket.socket, music_name):
+    with open(MUSIC_PATH + "\\" + music_name, 'wb') as f:
+        buf = c.recv(1024+4)
+        while buf:
+            f.write(buf)
+            buf = c.recv(1024*4)
+        print("added")
+
 
 
 def recognize_email_or_username(data: str):
@@ -242,7 +255,7 @@ def music_sender(c: socket.socket, data: str):
         while buf:
             i += 1
             print(i)
-            c.send(buf)
+            c.sendall(buf)
             buf = f.read(1024 * 4)
         c.shutdown(socket.SHUT_RDWR)
         print("music sent successfully")
