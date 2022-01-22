@@ -98,7 +98,3 @@ class Password_Forget_GUI:
             self.entry_username["state"] = "disable"
 
 
-
-
-
-# Password_Forget_GUI()
