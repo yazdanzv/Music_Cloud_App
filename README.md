@@ -22,7 +22,7 @@ A GUI server and client program that you can regirster and download your music f
 ![](![sign up page](https://user-images.githubusercontent.com/73643415/149954981-6346e0f9-29ae-4719-8b32-4b522643b7dc.png))
 
 
-in this page you can signin and also signup in the server and it has so many features , like it will check your phone number and email address by regex and pop up a dialogebox if it's not valid and it will pop up another dialogebox if you missed somethin in signup page and waits for you to fill it
+in this page you can signin and also signup in the server and it has so many features , like it will check your phone number and email address by regex and pop up a dialogebox if it's not valid()for phone validation it has been set with Iran phone numbers , you can change the regex pattern as you wish) and it will pop up another dialogebox if you missed something in signup page and waits for you to fill it
 
 it can also tells you that you are not registered or your password is incorrect by dialogebox
 after we filled the entries with right informations we press enter and it will go to the using_page
