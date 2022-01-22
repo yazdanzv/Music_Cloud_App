@@ -102,5 +102,3 @@ class Verify_GUI:
         import logging_in_gui
         self.window.destroy()
         logging_in_gui.Logging_In_GUI()
-
-# Verify_GUI("111")
