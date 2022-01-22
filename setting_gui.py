@@ -92,4 +92,3 @@ class Setting_GUI:
         logging_in_gui.Logging_In_GUI()
 
 
-# Setting_GUI("yazdan", "zandiyevakili", "yazdanzv.1378@gmail.com", "09354416622", "yazdanzv", "yanik1387")
