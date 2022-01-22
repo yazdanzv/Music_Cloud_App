@@ -64,5 +64,3 @@ class Account_Information_GUI:
         import logging_in_gui
         self.window.destroy()
         logging_in_gui.Logging_In_GUI()
-
-# Account_Information_GUI("")
