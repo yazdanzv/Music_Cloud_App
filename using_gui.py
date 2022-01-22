@@ -169,57 +169,6 @@ class Using_GUI:
 
         self.window.mainloop()
 
-    # def browseFiles(self):
-    #     self.music_add_path: str = filedialog.askopenfilename(initialdir="/",
-    #                                           title="Select a music",
-    #                                           filetypes=[("all files", "*.mp3*")])
-    #     print(self.music_add_path)
-    #     print(type(self.music_add_path))
-    #     list = self.music_add_path.split('/')
-    #     self.add_music = list[-1]
-    #     print(self.add_music)
-    #     self.add_music_thread()
-    #
-    # def add_music_thread(self):
-    #     f = threading.Thread(target=self.add_music_clicked)
-    #     f.setDaemon(True)
-    #     f.start()
-    #
-    # def add_music_clicked(self):
-    #     print("entered")
-    #     if len(self.add_music) != 0:
-    #         try:
-    #             self.s.close()
-    #         except:
-    #             pass
-    #         try:
-    #             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #             self.s.connect((HOST, PORT))
-    #         except:
-    #             pass
-    #         try:
-    #             print(self.add_music + "a")
-    #             self.s.send((self.add_music + "a").encode())
-    #             with open(self.music_add_path, 'rb') as f:
-    #                 print("first")
-    #                 buf = f.read(1024 * 4)
-    #                 i=0
-    #                 while buf:
-    #                     i+=1
-    #                     print(i)
-    #                     self.s.sendall(buf)
-    #                     buf = f.read(1024 * 4)
-    #             ans = self.s.recv(1024).decode()
-    #             if ans == "1":
-    #                 messagebox.showinfo(title="MUSIC CLOUD", message="Music added successfully")
-    #             else:
-    #                 raise Exception("something went wrong during adding music to server")
-    #         except:
-    #             pass
-    #     else:
-    #         messagebox.showerror(title="ERROR", message="Select a music first")
-    #         self.button_explore.focus_force()
-
     def goto_setting(self, event):
         import setting_gui
         firstname = self.firstname
@@ -287,8 +236,3 @@ class Using_GUI:
         t.setDaemon(True)
         t.start()
 
-
-
-
-
-# Using_GUI("yazdan", "zandiyevakili", "yazdanzv.1378@gmail.com", "09354416622", "yazdanzv", "yanik1387")
