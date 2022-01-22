@@ -294,5 +294,3 @@ class Logging_In_GUI:
             return True
         return False
 
-
-# Logging_In_GUI()
