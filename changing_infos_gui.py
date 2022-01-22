@@ -150,4 +150,3 @@ class Changing_Infos_GUI:
         else:
             self.apply_btn["state"] = "disable"
 
-# Changing_Infos_GUI("yazdan", "zandiyevakili", "yazdanzv.1378@gmail.com", "09354416622", "yazdanzv", "yanik1387")
