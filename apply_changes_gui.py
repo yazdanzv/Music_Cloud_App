@@ -125,5 +125,3 @@ class Apply_Changes_GUI:
         self.s.close()
 
 
-# Apply_Changes_GUI("yazdan", "zandiyevakili", "yazdanzv.1378@gmail.com", "09354416622", "yazdanzv", "yanik1387", "yanik",
-#                   "zandiye", "yanikzv.1387@gmail.com", "09217694971", "yanik1387")
