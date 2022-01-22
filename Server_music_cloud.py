@@ -6,10 +6,10 @@ import os
 import socket
 import smtplib
 
-File_PATH = "User_Datas.json"
-EMAIL = "musicloudzv@gmail.com"
-PASSWORD = "yanik1387"
-MUSIC_PATH = ".\\Music Bank"
+File_PATH = "PATH OF THE USERS JSON FILE"
+EMAIL = "YOUR DUMMY EMAIL"
+PASSWORD = "YOUR PASSWORD"
+MUSIC_PATH = "PATH OF YOUR MUSIC BANK"
 
 add_music_name = str
 
