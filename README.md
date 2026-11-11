@@ -118,4 +118,8 @@ there is a main function named fun here that specifies what service client wants
 it's easy to catch and nothings is complex in server that you can't catch
 
 at last I want to say sorry for lots of comments in the codes , I didn't delete them for updating this app in future ,
-if you want you can update it for yourself and use it 
+if you want you can update it for yourself and use it
+
+## Code guide
+
+`Server_music_cloud.py` handles socket connections, account operations, and music transfer. `main.py` starts the client interface; the `*_gui.py` modules implement sign-in, account information, password recovery, and settings screens with Tkinter. Run the server and client in separate Python processes after checking the host, port, and local file paths configured in the scripts. `User_Datas.json` is a placeholder in the repository; do not commit real account or mail credentials. This is a learning project and its account protocol should not be used for real users without a security review.
